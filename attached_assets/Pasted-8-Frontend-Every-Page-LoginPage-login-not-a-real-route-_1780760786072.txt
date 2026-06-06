@@ -1,0 +1,80 @@
+8. Frontend — Every Page
+LoginPage (/login — not a real route, shown when unauthenticated)
+Split-screen layout: left panel with marketing copy, right panel with "Sign in with google" button
+DashboardPage (/)
+Stats row 1 — clickable cards: Subjects, Notes, Videos, Pending Todos
+Stats row 2 — Topics, PYQ Papers, Key Formulas
+Exam countdown — shows next upcoming exam with days remaining (colored urgency: red ≤3, amber ≤7, blue otherwise)
+Upcoming events — list of next 5 calendar events with type badges (Today, Tomorrow, In Xd)
+Important formulas — grid of starred formulas with gold border
+Todos — top 5 pending todos with checkboxes
+Quick notes — 3 most recent sticky notes with color-coded left borders
+SubjectsPage (/subjects)
+Grid of subject cards with color-coded circles
+Add/edit subject dialog (name, description, color picker)
+Click a subject → navigates to subject detail
+SubjectDetailPage (/subjects/:id)
+Shows subject name + description
+List of topics as cards with edit/delete dropdown
+Add topic dialog
+TopicDetailPage (/topics/:id)
+Notes tab — grid of note cards. Each card has:
+Title, content preview, date
+Edit/Delete menu
+Bookmark button
+Expandable attachment panel (view, download, delete, attach new file)
+Drag-and-drop file attachment zone
+Formulas tab — grid of formula cards. Each has:
+Title, monospaced content block
+⭐ Star toggle (marks isImportant, adds gold ring to card)
+Bookmark button
+Each file card: icon, title, type badge, original name, preview (eye), open (external link), download, bookmark, delete
+Drag-and-drop upload zone
+PDF viewer modal (full-screen iframe with download button)
+
+Expandable attachment panel
+Files tab — folder-based layout:
+Left sidebar: All Files, PYQ Papers, Practice Papers, PDFs, Images, Other + custom user folders + "Add Folder" button
+Right panel: files filtered by selected folder
+Each file card: icon, title, type badge, original name, preview (eye), open (external link), download, bookmark, delete
+Drag-and-drop upload zone
+PDF viewer modal (full-screen iframe with download button)
+Videos tab — grid of video cards with title, description, URL link, notes, edit/delete
+CalendarPage (/calendar)
+Monthly calendar grid with event dots
+Sidebar with upcoming events list
+Add/edit event dialog (title, description, date/time picker, event type, subject selector)
+Event type badges: exam (red), reminder (amber), deadline (orange), event (blue)
+QuickNotesPage (/quick-notes)
+Color-coded sticky notes grid
+Add/edit note dialog (title, content, color picker)
+6 preset colors
+TodosPage (/todos)
+Full todo list with checkbox completion
+Add todo dialog (text, subject selector, due date)
+Filter by pending/completed
+Subject badge on each todo
+SearchPage (/search)
+Search input with debounced live query
+Results grouped by type (note/formula/file/video) with icon, badge, breadcrumb subject › topic
+Click any result → navigates to the correct topic tab
+Requires ≥2 characters to search
+BookmarksPage (/bookmarks)
+List of all bookmarked items with type icon, title, saved date
+Remove button per item
+NotFound (fallback)
+404 page
+9. Shared Components
+Layout (components/layout.tsx)
+Responsive: desktop sidebar on left, mobile hamburger menu
+PageHeader — title + description + optional action buttons
+Sidebar (components/sidebar.tsx)
+Logo (Study Manager + graduation cap icon)
+Search bar — type and submit to go to /search?q=...
+Nav links: Dashboard, Subjects, Calendar, Quick Notes, Todos, Bookmarks
+Active state with accent background
+User avatar + name + logout button at bottom
+Mobile overlay drawer
+
+
+

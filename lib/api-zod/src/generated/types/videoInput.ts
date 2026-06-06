@@ -6,6 +6,10 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface HealthStatus {
-  status: string;
+export interface VideoInput {
+  /** @minLength 1 */
+  title: string;
+  description?: string;
+  url: string;
+  notes?: string;
 }

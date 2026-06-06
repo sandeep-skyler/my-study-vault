@@ -5,7 +5,8 @@
  * Study Manager API
  * OpenAPI spec version: 0.1.0
  */
+import type { SearchResult } from './searchResult';
 
-export interface HealthStatus {
-  status: string;
+export interface SearchResults {
+  results: SearchResult[];
 }
