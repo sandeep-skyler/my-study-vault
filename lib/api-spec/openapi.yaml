@@ -444,7 +444,7 @@ paths:
   # ───── FILES ─────
   /topics/{topicId}/files:
     get:
-      operationId: listFiles
+      operationId: getTopicFiles
       tags: [files]
       summary: List files for a topic
       parameters:
@@ -453,11 +453,6 @@ paths:
           required: true
           schema:
             type: integer
-        - name: folderId
-          in: query
-          required: false
-          schema:
-            type: ["integer", "null"]
       responses:
         "200":
           description: List of files
@@ -482,20 +477,9 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-                title:
-                  type: string
-                folderId:
-                  type: ["integer", "null"]
-              required:
-                - file
-                - title
+              $ref: "#/components/schemas/FileUploadInput"
       responses:
         "201":
           description: Uploaded
@@ -691,17 +675,6 @@ paths:
       operationId: listCalendarEvents
       tags: [calendar]
       summary: List calendar events
-      parameters:
-        - name: month
-          in: query
-          required: false
-          schema:
-            type: ["integer", "null"]
-        - name: year
-          in: query
-          required: false
-          schema:
-            type: ["integer", "null"]
       responses:
         "200":
           description: List of events
@@ -872,13 +845,6 @@ paths:
       operationId: listTodos
       tags: [todos]
       summary: List todos
-      parameters:
-        - name: status
-          in: query
-          required: false
-          schema:
-            type: ["string", "null"]
-            enum: ["pending", "completed", null]
       responses:
         "200":
           description: List of todos
@@ -1282,6 +1248,26 @@ components:
         createdAt:
           type: string
           format: date-time
+
+    FileUploadInput:
+      type: object
+      required: [title, driveFileId, driveShareableLink, originalName, mimeType, fileType]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        driveFileId:
+          type: string
+        driveShareableLink:
+          type: string
+        originalName:
+          type: string
+        mimeType:
+          type: string
+        fileType:
+          type: string
+        folderId:
+          type: ["integer", "null"]
 
     FileUpdate:
       type: object

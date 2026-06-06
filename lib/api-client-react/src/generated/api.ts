@@ -27,6 +27,7 @@ import type {
   CalendarEventUpdate,
   DashboardStats,
   FileUpdate,
+  FileUploadInput,
   Folder,
   FolderInput,
   Formula,
@@ -34,9 +35,6 @@ import type {
   FormulaUpdate,
   GlobalSearchParams,
   HealthStatus,
-  ListCalendarEventsParams,
-  ListFilesParams,
-  ListTodosParams,
   NextExam,
   Note,
   NoteInput,
@@ -55,7 +53,6 @@ import type {
   Topic,
   TopicInput,
   TopicUpdate,
-  UploadFileBody,
   Video,
   VideoInput,
   VideoUpdate
@@ -1614,29 +1611,20 @@ export const useToggleFormulaStar = <TError = ErrorType<unknown>,
       return useMutation(getToggleFormulaStarMutationOptions(options));
     }
 
-export const getListFilesUrl = (topicId: number,
-    params?: ListFilesParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getGetTopicFilesUrl = (topicId: number,) => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/topics/${topicId}/files?${stringifiedParams}` : `/api/topics/${topicId}/files`
+  return `/api/topics/${topicId}/files`
 }
 
 /**
  * @summary List files for a topic
  */
-export const listFiles = async (topicId: number,
-    params?: ListFilesParams, options?: RequestInit): Promise<StudyFile[]> => {
+export const getTopicFiles = async (topicId: number, options?: RequestInit): Promise<StudyFile[]> => {
 
-  return customFetch<StudyFile[]>(getListFilesUrl(topicId,params),
+  return customFetch<StudyFile[]>(getGetTopicFilesUrl(topicId),
   {
     ...options,
     method: 'GET'
@@ -1649,48 +1637,45 @@ export const listFiles = async (topicId: number,
 
 
 
-export const getListFilesQueryKey = (topicId: number,
-    params?: ListFilesParams,) => {
+export const getGetTopicFilesQueryKey = (topicId: number,) => {
     return [
-    `/api/topics/${topicId}/files`, ...(params ? [params] : [])
+    `/api/topics/${topicId}/files`
     ] as const;
     }
 
 
-export const getListFilesQueryOptions = <TData = Awaited<ReturnType<typeof listFiles>>, TError = ErrorType<unknown>>(topicId: number,
-    params?: ListFilesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listFiles>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+export const getGetTopicFilesQueryOptions = <TData = Awaited<ReturnType<typeof getTopicFiles>>, TError = ErrorType<unknown>>(topicId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTopicFiles>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getListFilesQueryKey(topicId,params);
+  const queryKey =  queryOptions?.queryKey ?? getGetTopicFilesQueryKey(topicId);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listFiles>>> = ({ signal }) => listFiles(topicId,params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTopicFiles>>> = ({ signal }) => getTopicFiles(topicId, { signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, enabled: !!(topicId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listFiles>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(topicId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTopicFiles>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type ListFilesQueryResult = NonNullable<Awaited<ReturnType<typeof listFiles>>>
-export type ListFilesQueryError = ErrorType<unknown>
+export type GetTopicFilesQueryResult = NonNullable<Awaited<ReturnType<typeof getTopicFiles>>>
+export type GetTopicFilesQueryError = ErrorType<unknown>
 
 
 /**
  * @summary List files for a topic
  */
 
-export function useListFiles<TData = Awaited<ReturnType<typeof listFiles>>, TError = ErrorType<unknown>>(
- topicId: number,
-    params?: ListFilesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listFiles>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+export function useGetTopicFiles<TData = Awaited<ReturnType<typeof getTopicFiles>>, TError = ErrorType<unknown>>(
+ topicId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTopicFiles>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getListFilesQueryOptions(topicId,params,options)
+  const queryOptions = getGetTopicFilesQueryOptions(topicId,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -1715,21 +1700,15 @@ export const getUploadFileUrl = (topicId: number,) => {
  * @summary Upload a file to Google Drive and attach to topic
  */
 export const uploadFile = async (topicId: number,
-    uploadFileBody: UploadFileBody, options?: RequestInit): Promise<StudyFile> => {
-    const formData = new FormData();
-formData.append(`file`, uploadFileBody.file);
-formData.append(`title`, uploadFileBody.title);
-if(uploadFileBody.folderId !== undefined && uploadFileBody.folderId !== null) {
- formData.append(`folderId`, uploadFileBody.folderId.toString())
- }
+    fileUploadInput: FileUploadInput, options?: RequestInit): Promise<StudyFile> => {
 
   return customFetch<StudyFile>(getUploadFileUrl(topicId),
   {
     ...options,
-    method: 'POST'
-    ,
-    body:
-      formData,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      fileUploadInput,)
   }
 );}
 
@@ -1737,8 +1716,8 @@ if(uploadFileBody.folderId !== undefined && uploadFileBody.folderId !== null) {
 
 
 export const getUploadFileMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadFile>>, TError,{topicId: number;data: BodyType<UploadFileBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof uploadFile>>, TError,{topicId: number;data: BodyType<UploadFileBody>}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadFile>>, TError,{topicId: number;data: BodyType<FileUploadInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof uploadFile>>, TError,{topicId: number;data: BodyType<FileUploadInput>}, TContext> => {
 
 const mutationKey = ['uploadFile'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1750,7 +1729,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadFile>>, {topicId: number;data: BodyType<UploadFileBody>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadFile>>, {topicId: number;data: BodyType<FileUploadInput>}> = (props) => {
           const {topicId,data} = props ?? {};
 
           return  uploadFile(topicId,data,requestOptions)
@@ -1764,18 +1743,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type UploadFileMutationResult = NonNullable<Awaited<ReturnType<typeof uploadFile>>>
-    export type UploadFileMutationBody = BodyType<UploadFileBody>
+    export type UploadFileMutationBody = BodyType<FileUploadInput>
     export type UploadFileMutationError = ErrorType<unknown>
 
     /**
  * @summary Upload a file to Google Drive and attach to topic
  */
 export const useUploadFile = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadFile>>, TError,{topicId: number;data: BodyType<UploadFileBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadFile>>, TError,{topicId: number;data: BodyType<FileUploadInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof uploadFile>>,
         TError,
-        {topicId: number;data: BodyType<UploadFileBody>},
+        {topicId: number;data: BodyType<FileUploadInput>},
         TContext
       > => {
       return useMutation(getUploadFileMutationOptions(options));
@@ -2433,27 +2412,20 @@ export const useDeleteVideo = <TError = ErrorType<unknown>,
       return useMutation(getDeleteVideoMutationOptions(options));
     }
 
-export const getListCalendarEventsUrl = (params?: ListCalendarEventsParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getListCalendarEventsUrl = () => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/calendar/events?${stringifiedParams}` : `/api/calendar/events`
+  return `/api/calendar/events`
 }
 
 /**
  * @summary List calendar events
  */
-export const listCalendarEvents = async (params?: ListCalendarEventsParams, options?: RequestInit): Promise<CalendarEvent[]> => {
+export const listCalendarEvents = async ( options?: RequestInit): Promise<CalendarEvent[]> => {
 
-  return customFetch<CalendarEvent[]>(getListCalendarEventsUrl(params),
+  return customFetch<CalendarEvent[]>(getListCalendarEventsUrl(),
   {
     ...options,
     method: 'GET'
@@ -2466,23 +2438,23 @@ export const listCalendarEvents = async (params?: ListCalendarEventsParams, opti
 
 
 
-export const getListCalendarEventsQueryKey = (params?: ListCalendarEventsParams,) => {
+export const getListCalendarEventsQueryKey = () => {
     return [
-    `/api/calendar/events`, ...(params ? [params] : [])
+    `/api/calendar/events`
     ] as const;
     }
 
 
-export const getListCalendarEventsQueryOptions = <TData = Awaited<ReturnType<typeof listCalendarEvents>>, TError = ErrorType<unknown>>(params?: ListCalendarEventsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCalendarEvents>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+export const getListCalendarEventsQueryOptions = <TData = Awaited<ReturnType<typeof listCalendarEvents>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCalendarEvents>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getListCalendarEventsQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getListCalendarEventsQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listCalendarEvents>>> = ({ signal }) => listCalendarEvents(params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listCalendarEvents>>> = ({ signal }) => listCalendarEvents({ signal, ...requestOptions });
 
 
 
@@ -2500,11 +2472,11 @@ export type ListCalendarEventsQueryError = ErrorType<unknown>
  */
 
 export function useListCalendarEvents<TData = Awaited<ReturnType<typeof listCalendarEvents>>, TError = ErrorType<unknown>>(
- params?: ListCalendarEventsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCalendarEvents>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCalendarEvents>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getListCalendarEventsQueryOptions(params,options)
+  const queryOptions = getListCalendarEventsQueryOptions(options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -3174,27 +3146,20 @@ export const useDeleteQuickNote = <TError = ErrorType<unknown>,
       return useMutation(getDeleteQuickNoteMutationOptions(options));
     }
 
-export const getListTodosUrl = (params?: ListTodosParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getListTodosUrl = () => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/todos?${stringifiedParams}` : `/api/todos`
+  return `/api/todos`
 }
 
 /**
  * @summary List todos
  */
-export const listTodos = async (params?: ListTodosParams, options?: RequestInit): Promise<Todo[]> => {
+export const listTodos = async ( options?: RequestInit): Promise<Todo[]> => {
 
-  return customFetch<Todo[]>(getListTodosUrl(params),
+  return customFetch<Todo[]>(getListTodosUrl(),
   {
     ...options,
     method: 'GET'
@@ -3207,23 +3172,23 @@ export const listTodos = async (params?: ListTodosParams, options?: RequestInit)
 
 
 
-export const getListTodosQueryKey = (params?: ListTodosParams,) => {
+export const getListTodosQueryKey = () => {
     return [
-    `/api/todos`, ...(params ? [params] : [])
+    `/api/todos`
     ] as const;
     }
 
 
-export const getListTodosQueryOptions = <TData = Awaited<ReturnType<typeof listTodos>>, TError = ErrorType<unknown>>(params?: ListTodosParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTodos>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+export const getListTodosQueryOptions = <TData = Awaited<ReturnType<typeof listTodos>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTodos>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getListTodosQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getListTodosQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listTodos>>> = ({ signal }) => listTodos(params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listTodos>>> = ({ signal }) => listTodos({ signal, ...requestOptions });
 
 
 
@@ -3241,11 +3206,11 @@ export type ListTodosQueryError = ErrorType<unknown>
  */
 
 export function useListTodos<TData = Awaited<ReturnType<typeof listTodos>>, TError = ErrorType<unknown>>(
- params?: ListTodosParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTodos>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTodos>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getListTodosQueryOptions(params,options)
+  const queryOptions = getListTodosQueryOptions(options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

@@ -1,0 +1,2 @@
+- [Clerk version compatibility](clerk-versions.md) — @clerk/react@6 + @clerk/express@2 both need @clerk/shared@4; workspace override required
+- [File upload UX](file-upload-ux.md) — no Drive auto-integration; manual paste-link dialog stores driveFileId:"manual" + driveShareableLink

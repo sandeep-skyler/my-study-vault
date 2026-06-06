@@ -115,6 +115,18 @@ export interface StudyFile {
   createdAt: string;
 }
 
+export interface FileUploadInput {
+  /** @minLength 1 */
+  title: string;
+  driveFileId: string;
+  driveShareableLink: string;
+  originalName: string;
+  mimeType: string;
+  fileType: string;
+  /** @nullable */
+  folderId?: number | null;
+}
+
 export interface FileUpdate {
   title?: string;
   /** @nullable */
@@ -332,46 +344,6 @@ export interface DashboardStats {
   pendingTodoCount: number;
   keyFormulaCount: number;
 }
-
-export type ListFilesParams = {
-/**
- * @nullable
- */
-folderId?: number | null;
-};
-
-export type UploadFileBody = {
-  file: Blob;
-  title: string;
-  /** @nullable */
-  folderId?: number | null;
-};
-
-export type ListCalendarEventsParams = {
-/**
- * @nullable
- */
-month?: number | null;
-/**
- * @nullable
- */
-year?: number | null;
-};
-
-export type ListTodosParams = {
-/**
- * @nullable
- */
-status?: ListTodosStatus;
-};
-
-export type ListTodosStatus = typeof ListTodosStatus[keyof typeof ListTodosStatus] | null;
-
-
-export const ListTodosStatus = {
-  pending: 'pending',
-  completed: 'completed',
-} as const;
 
 export type GlobalSearchParams = {
 q: string;

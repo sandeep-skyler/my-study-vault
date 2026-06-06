@@ -338,15 +338,11 @@ export const ToggleFormulaStarResponse = zod.object({
 /**
  * @summary List files for a topic
  */
-export const ListFilesParams = zod.object({
+export const GetTopicFilesParams = zod.object({
   "topicId": zod.coerce.number()
 })
 
-export const ListFilesQueryParams = zod.object({
-  "folderId": zod.coerce.number().nullish()
-})
-
-export const ListFilesResponseItem = zod.object({
+export const GetTopicFilesResponseItem = zod.object({
   "id": zod.number(),
   "topicId": zod.number(),
   "title": zod.string(),
@@ -358,7 +354,7 @@ export const ListFilesResponseItem = zod.object({
   "folderId": zod.number().nullish(),
   "createdAt": zod.coerce.date()
 })
-export const ListFilesResponse = zod.array(ListFilesResponseItem)
+export const GetTopicFilesResponse = zod.array(GetTopicFilesResponseItem)
 
 
 /**
@@ -368,9 +364,16 @@ export const UploadFileParams = zod.object({
   "topicId": zod.coerce.number()
 })
 
+
+
+
 export const UploadFileBody = zod.object({
-  "file": zod.instanceof(File),
-  "title": zod.string(),
+  "title": zod.string().min(1),
+  "driveFileId": zod.string(),
+  "driveShareableLink": zod.string(),
+  "originalName": zod.string(),
+  "mimeType": zod.string(),
+  "fileType": zod.string(),
   "folderId": zod.number().nullish()
 })
 
@@ -521,11 +524,6 @@ export const DeleteVideoParams = zod.object({
 /**
  * @summary List calendar events
  */
-export const ListCalendarEventsQueryParams = zod.object({
-  "month": zod.coerce.number().nullish(),
-  "year": zod.coerce.number().nullish()
-})
-
 export const ListCalendarEventsResponseItem = zod.object({
   "id": zod.number(),
   "title": zod.string(),
@@ -684,10 +682,6 @@ export const DeleteQuickNoteParams = zod.object({
 /**
  * @summary List todos
  */
-export const ListTodosQueryParams = zod.object({
-  "status": zod.union([zod.literal('pending'),zod.literal('completed'),zod.literal(null)]).nullish()
-})
-
 export const ListTodosResponseItem = zod.object({
   "id": zod.number(),
   "text": zod.string(),

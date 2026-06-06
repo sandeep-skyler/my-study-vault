@@ -6,9 +6,14 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type UploadFileBody = {
-  file: Blob;
+export interface FileUploadInput {
+  /** @minLength 1 */
   title: string;
+  driveFileId: string;
+  driveShareableLink: string;
+  originalName: string;
+  mimeType: string;
+  fileType: string;
   /** @nullable */
   folderId?: number | null;
-};
+}
