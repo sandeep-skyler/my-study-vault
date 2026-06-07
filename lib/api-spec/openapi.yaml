@@ -1108,7 +1108,7 @@ components:
     # ── Topic ──
     Topic:
       type: object
-      required: [id, subjectId, name, createdAt]
+      required: [id, subjectId, name, status, createdAt]
       properties:
         id:
           type: integer
@@ -1118,6 +1118,9 @@ components:
           type: string
         description:
           type: ["string", "null"]
+        status:
+          type: string
+          enum: [not_started, in_progress, completed]
         createdAt:
           type: string
           format: date-time
@@ -1131,6 +1134,8 @@ components:
           minLength: 1
         description:
           type: string
+        status:
+          type: string
 
     TopicUpdate:
       type: object
@@ -1139,11 +1144,13 @@ components:
           type: string
         description:
           type: ["string", "null"]
+        status:
+          type: string
 
     # ── Note ──
     Note:
       type: object
-      required: [id, topicId, title, createdAt]
+      required: [id, topicId, title, tags, createdAt, updatedAt]
       properties:
         id:
           type: integer
@@ -1153,6 +1160,10 @@ components:
           type: string
         content:
           type: ["string", "null"]
+        tags:
+          type: array
+          items:
+            type: string
         createdAt:
           type: string
           format: date-time
@@ -1168,7 +1179,11 @@ components:
           type: string
           minLength: 1
         content:
-          type: string
+          type: ["string", "null"]
+        tags:
+          type: array
+          items:
+            type: string
 
     NoteUpdate:
       type: object
@@ -1177,6 +1192,10 @@ components:
           type: string
         content:
           type: ["string", "null"]
+        tags:
+          type: array
+          items:
+            type: string
 
     # ── Formula ──
     Formula:

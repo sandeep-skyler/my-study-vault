@@ -32,12 +32,22 @@ export interface SubjectUpdate {
   color?: string;
 }
 
+export type TopicStatus = typeof TopicStatus[keyof typeof TopicStatus];
+
+
+export const TopicStatus = {
+  not_started: 'not_started',
+  in_progress: 'in_progress',
+  completed: 'completed',
+} as const;
+
 export interface Topic {
   id: number;
   subjectId: number;
   name: string;
   /** @nullable */
   description?: string | null;
+  status: TopicStatus;
   createdAt: string;
 }
 
@@ -45,12 +55,14 @@ export interface TopicInput {
   /** @minLength 1 */
   name: string;
   description?: string;
+  status?: string;
 }
 
 export interface TopicUpdate {
   name?: string;
   /** @nullable */
   description?: string | null;
+  status?: string;
 }
 
 export interface Note {
@@ -59,20 +71,24 @@ export interface Note {
   title: string;
   /** @nullable */
   content?: string | null;
+  tags: string[];
   createdAt: string;
-  updatedAt?: string;
+  updatedAt: string;
 }
 
 export interface NoteInput {
   /** @minLength 1 */
   title: string;
-  content?: string;
+  /** @nullable */
+  content?: string | null;
+  tags?: string[];
 }
 
 export interface NoteUpdate {
   title?: string;
   /** @nullable */
   content?: string | null;
+  tags?: string[];
 }
 
 export interface Formula {

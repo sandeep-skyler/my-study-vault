@@ -9,6 +9,7 @@ export const topicsTable = pgTable("topics", {
   subjectId: integer("subject_id").notNull().references(() => subjectsTable.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   description: text("description"),
+  status: text("status").notNull().default("not_started"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

@@ -9,5 +9,7 @@
 export interface NoteInput {
   /** @minLength 1 */
   title: string;
-  content?: string;
+  /** @nullable */
+  content?: string | null;
+  tags?: string[];
 }

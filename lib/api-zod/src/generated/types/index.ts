@@ -42,6 +42,7 @@ export * from './todoInput';
 export * from './todoUpdate';
 export * from './topic';
 export * from './topicInput';
+export * from './topicStatus';
 export * from './topicUpdate';
 export * from './video';
 export * from './videoInput';

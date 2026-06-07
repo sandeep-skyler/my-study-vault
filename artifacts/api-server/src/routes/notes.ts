@@ -7,6 +7,7 @@ const router = Router();
 
 const fmt = (n: typeof notesTable.$inferSelect) => ({
   ...n,
+  tags: (n.tags as string[]) ?? [],
   createdAt: n.createdAt.toISOString(),
   updatedAt: n.updatedAt.toISOString(),
 });
@@ -21,9 +22,9 @@ router.get("/topics/:topicId/notes", requireAuth, async (req, res) => {
 router.post("/topics/:topicId/notes", requireAuth, async (req, res) => {
   const userId = (req as any).userId;
   const topicId = Number(req.params.topicId);
-  const { title, content } = req.body;
+  const { title, content, tags } = req.body;
   if (!title) { res.status(400).json({ error: "title required" }); return; }
-  const [row] = await db.insert(notesTable).values({ userId, topicId, title, content }).returning();
+  const [row] = await db.insert(notesTable).values({ userId, topicId, title, content, tags: tags || [] }).returning();
   res.status(201).json(fmt(row));
 });
 
@@ -38,8 +39,12 @@ router.get("/notes/:id", requireAuth, async (req, res) => {
 router.patch("/notes/:id", requireAuth, async (req, res) => {
   const userId = (req as any).userId;
   const id = Number(req.params.id);
-  const { title, content } = req.body;
-  const [row] = await db.update(notesTable).set({ ...(title && { title }), ...(content !== undefined && { content }) }).where(and(eq(notesTable.id, id), eq(notesTable.userId, userId))).returning();
+  const { title, content, tags } = req.body;
+  const updates: Record<string, unknown> = {};
+  if (title) updates.title = title;
+  if (content !== undefined) updates.content = content;
+  if (tags !== undefined) updates.tags = tags;
+  const [row] = await db.update(notesTable).set(updates).where(and(eq(notesTable.id, id), eq(notesTable.userId, userId))).returning();
   if (!row) { res.status(404).json({ error: "Not found" }); return; }
   res.json(fmt(row));
 });

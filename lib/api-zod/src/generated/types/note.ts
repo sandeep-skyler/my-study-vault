@@ -12,6 +12,7 @@ export interface Note {
   title: string;
   /** @nullable */
   content?: string | null;
+  tags: string[];
   createdAt: Date;
-  updatedAt?: Date;
+  updatedAt: Date;
 }

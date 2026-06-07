@@ -100,6 +100,7 @@ export const ListTopicsResponseItem = zod.object({
   "subjectId": zod.number(),
   "name": zod.string(),
   "description": zod.string().nullish(),
+  "status": zod.enum(['not_started', 'in_progress', 'completed']),
   "createdAt": zod.coerce.date()
 })
 export const ListTopicsResponse = zod.array(ListTopicsResponseItem)
@@ -117,7 +118,8 @@ export const CreateTopicParams = zod.object({
 
 export const CreateTopicBody = zod.object({
   "name": zod.string().min(1),
-  "description": zod.string().optional()
+  "description": zod.string().optional(),
+  "status": zod.string().optional()
 })
 
 
@@ -133,6 +135,7 @@ export const GetTopicResponse = zod.object({
   "subjectId": zod.number(),
   "name": zod.string(),
   "description": zod.string().nullish(),
+  "status": zod.enum(['not_started', 'in_progress', 'completed']),
   "createdAt": zod.coerce.date()
 })
 
@@ -146,7 +149,8 @@ export const UpdateTopicParams = zod.object({
 
 export const UpdateTopicBody = zod.object({
   "name": zod.string().optional(),
-  "description": zod.string().nullish()
+  "description": zod.string().nullish(),
+  "status": zod.string().optional()
 })
 
 export const UpdateTopicResponse = zod.object({
@@ -154,6 +158,7 @@ export const UpdateTopicResponse = zod.object({
   "subjectId": zod.number(),
   "name": zod.string(),
   "description": zod.string().nullish(),
+  "status": zod.enum(['not_started', 'in_progress', 'completed']),
   "createdAt": zod.coerce.date()
 })
 
@@ -178,8 +183,9 @@ export const ListNotesResponseItem = zod.object({
   "topicId": zod.number(),
   "title": zod.string(),
   "content": zod.string().nullish(),
+  "tags": zod.array(zod.string()),
   "createdAt": zod.coerce.date(),
-  "updatedAt": zod.coerce.date().optional()
+  "updatedAt": zod.coerce.date()
 })
 export const ListNotesResponse = zod.array(ListNotesResponseItem)
 
@@ -196,7 +202,8 @@ export const CreateNoteParams = zod.object({
 
 export const CreateNoteBody = zod.object({
   "title": zod.string().min(1),
-  "content": zod.string().optional()
+  "content": zod.string().nullish(),
+  "tags": zod.array(zod.string()).optional()
 })
 
 
@@ -212,8 +219,9 @@ export const GetNoteResponse = zod.object({
   "topicId": zod.number(),
   "title": zod.string(),
   "content": zod.string().nullish(),
+  "tags": zod.array(zod.string()),
   "createdAt": zod.coerce.date(),
-  "updatedAt": zod.coerce.date().optional()
+  "updatedAt": zod.coerce.date()
 })
 
 
@@ -226,7 +234,8 @@ export const UpdateNoteParams = zod.object({
 
 export const UpdateNoteBody = zod.object({
   "title": zod.string().optional(),
-  "content": zod.string().nullish()
+  "content": zod.string().nullish(),
+  "tags": zod.array(zod.string()).optional()
 })
 
 export const UpdateNoteResponse = zod.object({
@@ -234,8 +243,9 @@ export const UpdateNoteResponse = zod.object({
   "topicId": zod.number(),
   "title": zod.string(),
   "content": zod.string().nullish(),
+  "tags": zod.array(zod.string()),
   "createdAt": zod.coerce.date(),
-  "updatedAt": zod.coerce.date().optional()
+  "updatedAt": zod.coerce.date()
 })
 
 

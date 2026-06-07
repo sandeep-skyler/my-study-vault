@@ -10,4 +10,5 @@ export interface TopicInput {
   /** @minLength 1 */
   name: string;
   description?: string;
+  status?: string;
 }

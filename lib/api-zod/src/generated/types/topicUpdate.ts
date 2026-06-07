@@ -10,4 +10,5 @@ export interface TopicUpdate {
   name?: string;
   /** @nullable */
   description?: string | null;
+  status?: string;
 }

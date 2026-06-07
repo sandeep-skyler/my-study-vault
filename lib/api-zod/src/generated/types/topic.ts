@@ -5,6 +5,7 @@
  * Study Manager API
  * OpenAPI spec version: 0.1.0
  */
+import type { TopicStatus } from './topicStatus';
 
 export interface Topic {
   id: number;
@@ -12,5 +13,6 @@ export interface Topic {
   name: string;
   /** @nullable */
   description?: string | null;
+  status: TopicStatus;
   createdAt: Date;
 }

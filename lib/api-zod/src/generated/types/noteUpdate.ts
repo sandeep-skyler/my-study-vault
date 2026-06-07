@@ -10,4 +10,5 @@ export interface NoteUpdate {
   title?: string;
   /** @nullable */
   content?: string | null;
+  tags?: string[];
 }
