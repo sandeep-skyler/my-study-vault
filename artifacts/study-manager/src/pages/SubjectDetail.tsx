@@ -19,11 +19,11 @@ export default function SubjectDetail() {
   const [, setLocation] = useLocation();
 
   const { data: subject, isLoading: isSubjectLoading } = useGetSubject(subjectId, {
-    query: { enabled: !!subjectId }
+    query: { enabled: !!subjectId } as any
   });
   
   const { data: topics, isLoading: isTopicsLoading } = useListTopics(subjectId, {
-    query: { enabled: !!subjectId }
+    query: { enabled: !!subjectId } as any
   });
 
   const createTopic = useCreateTopic();

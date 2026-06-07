@@ -27,7 +27,7 @@ export default function Search() {
   
   const { data: searchData, isLoading } = useGlobalSearch(
     { q: debouncedQuery }, 
-    { query: { enabled: debouncedQuery.length >= 2 } }
+    { query: { enabled: debouncedQuery.length >= 2 } as any }
   );
 
   const getIcon = (type: string) => {

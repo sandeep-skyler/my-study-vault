@@ -8,7 +8,10 @@ export const formulasTable = pgTable("formulas", {
   userId: text("user_id").notNull(),
   topicId: integer("topic_id").notNull().references(() => topicsTable.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
-  content: text("content").notNull(),
+  content: text("content"),
+  driveShareableLink: text("drive_shareable_link"),
+  originalName: text("original_name"),
+  fileType: text("file_type"),
   isImportant: boolean("is_important").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });

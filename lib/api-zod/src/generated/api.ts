@@ -258,7 +258,10 @@ export const ListFormulasResponseItem = zod.object({
   "id": zod.number(),
   "topicId": zod.number(),
   "title": zod.string(),
-  "content": zod.string(),
+  "content": zod.string().nullish(),
+  "driveShareableLink": zod.string().nullish(),
+  "originalName": zod.string().nullish(),
+  "fileType": zod.string().nullish(),
   "isImportant": zod.boolean(),
   "subjectName": zod.string().nullish(),
   "topicName": zod.string().nullish(),
@@ -279,7 +282,10 @@ export const CreateFormulaParams = zod.object({
 
 export const CreateFormulaBody = zod.object({
   "title": zod.string().min(1),
-  "content": zod.string()
+  "content": zod.string().nullish(),
+  "driveShareableLink": zod.string().nullish(),
+  "originalName": zod.string().nullish(),
+  "fileType": zod.string().nullish()
 })
 
 
@@ -292,7 +298,10 @@ export const UpdateFormulaParams = zod.object({
 
 export const UpdateFormulaBody = zod.object({
   "title": zod.string().optional(),
-  "content": zod.string().optional(),
+  "content": zod.string().nullish(),
+  "driveShareableLink": zod.string().nullish(),
+  "originalName": zod.string().nullish(),
+  "fileType": zod.string().nullish(),
   "isImportant": zod.boolean().optional()
 })
 
@@ -300,7 +309,10 @@ export const UpdateFormulaResponse = zod.object({
   "id": zod.number(),
   "topicId": zod.number(),
   "title": zod.string(),
-  "content": zod.string(),
+  "content": zod.string().nullish(),
+  "driveShareableLink": zod.string().nullish(),
+  "originalName": zod.string().nullish(),
+  "fileType": zod.string().nullish(),
   "isImportant": zod.boolean(),
   "subjectName": zod.string().nullish(),
   "topicName": zod.string().nullish(),
@@ -327,7 +339,10 @@ export const ToggleFormulaStarResponse = zod.object({
   "id": zod.number(),
   "topicId": zod.number(),
   "title": zod.string(),
-  "content": zod.string(),
+  "content": zod.string().nullish(),
+  "driveShareableLink": zod.string().nullish(),
+  "originalName": zod.string().nullish(),
+  "fileType": zod.string().nullish(),
   "isImportant": zod.boolean(),
   "subjectName": zod.string().nullish(),
   "topicName": zod.string().nullish(),
@@ -830,7 +845,10 @@ export const GetImportantFormulasResponseItem = zod.object({
   "id": zod.number(),
   "topicId": zod.number(),
   "title": zod.string(),
-  "content": zod.string(),
+  "content": zod.string().nullish(),
+  "driveShareableLink": zod.string().nullish(),
+  "originalName": zod.string().nullish(),
+  "fileType": zod.string().nullish(),
   "isImportant": zod.boolean(),
   "subjectName": zod.string().nullish(),
   "topicName": zod.string().nullish(),

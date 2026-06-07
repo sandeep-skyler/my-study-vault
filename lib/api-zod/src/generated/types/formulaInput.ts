@@ -9,5 +9,12 @@
 export interface FormulaInput {
   /** @minLength 1 */
   title: string;
-  content: string;
+  /** @nullable */
+  content?: string | null;
+  /** @nullable */
+  driveShareableLink?: string | null;
+  /** @nullable */
+  originalName?: string | null;
+  /** @nullable */
+  fileType?: string | null;
 }

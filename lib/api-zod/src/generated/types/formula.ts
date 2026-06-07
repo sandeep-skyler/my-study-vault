@@ -10,7 +10,14 @@ export interface Formula {
   id: number;
   topicId: number;
   title: string;
-  content: string;
+  /** @nullable */
+  content?: string | null;
+  /** @nullable */
+  driveShareableLink?: string | null;
+  /** @nullable */
+  originalName?: string | null;
+  /** @nullable */
+  fileType?: string | null;
   isImportant: boolean;
   /** @nullable */
   subjectName?: string | null;

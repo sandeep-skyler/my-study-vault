@@ -1181,7 +1181,7 @@ components:
     # ── Formula ──
     Formula:
       type: object
-      required: [id, topicId, title, content, isImportant, createdAt]
+      required: [id, topicId, title, isImportant, createdAt]
       properties:
         id:
           type: integer
@@ -1190,7 +1190,13 @@ components:
         title:
           type: string
         content:
-          type: string
+          type: ["string", "null"]
+        driveShareableLink:
+          type: ["string", "null"]
+        originalName:
+          type: ["string", "null"]
+        fileType:
+          type: ["string", "null"]
         isImportant:
           type: boolean
         subjectName:
@@ -1203,13 +1209,19 @@ components:
 
     FormulaInput:
       type: object
-      required: [title, content]
+      required: [title]
       properties:
         title:
           type: string
           minLength: 1
         content:
-          type: string
+          type: ["string", "null"]
+        driveShareableLink:
+          type: ["string", "null"]
+        originalName:
+          type: ["string", "null"]
+        fileType:
+          type: ["string", "null"]
 
     FormulaUpdate:
       type: object
@@ -1217,7 +1229,13 @@ components:
         title:
           type: string
         content:
-          type: string
+          type: ["string", "null"]
+        driveShareableLink:
+          type: ["string", "null"]
+        originalName:
+          type: ["string", "null"]
+        fileType:
+          type: ["string", "null"]
         isImportant:
           type: boolean
 

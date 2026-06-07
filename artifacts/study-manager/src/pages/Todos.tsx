@@ -35,8 +35,8 @@ export default function Todos() {
     setFormData({ text: "", subjectId: "none", dueDate: "" });
   };
 
-  const handleToggle = (id: number, completed: boolean) => {
-    completeTodo.mutate({ id, data: { completed } }, {
+  const handleToggle = (id: number) => {
+    completeTodo.mutate({ id }, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["/api/todos"] });
         queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
@@ -170,7 +170,7 @@ export default function Todos() {
                 >
                   <Checkbox 
                     checked={todo.completed} 
-                    onCheckedChange={(c) => handleToggle(todo.id, !!c)} 
+                    onCheckedChange={() => handleToggle(todo.id)} 
                     className="w-5 h-5"
                   />
                   <div className="flex-1 min-w-0">
