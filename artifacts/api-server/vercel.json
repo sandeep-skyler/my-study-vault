@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "functions": {
+    "dist/handler.mjs": {
+      "maxDuration": 30
+    }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/dist/handler.mjs"
+    }
+  ]
+}
